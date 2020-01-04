@@ -104,7 +104,13 @@ class Promise {
     return this.then(null, onRejected);
   }
   finally(fn) {
-    return this.then(fn, fn);
+    return this.then((value)=>{
+      return Promise.resolve(fn()).then(()=>{
+        return value;
+      })
+    },(err)=>{
+      return Promise.resolve(fn()).then(()=>{throw err})
+    })
   }
   static resolve(){
     return new Promise(function(resolve,reject){
